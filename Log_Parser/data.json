@@ -1,0 +1,20 @@
+{
+   "internalMessage":{
+       "description":"COMMAND_START_LISTENER",
+       "parameters":{
+           {
+               "parameterName":"STEP_NUMBER",
+               "parameterValue":"0"
+           },
+           {
+               "parameterName":"SUBSCRIBER",
+               "parameterValue":"11"
+           }
+       }
+   },
+   "aspsSip":{
+       {
+           "dummy":""
+       }
+   }
+}
