@@ -180,3 +180,63 @@ def json_string_to_dict(string):
 def message_to_dict(message):
     return json_string_to_dict(log_format_to_json(message))
 
+def parse_messages(message_list):
+    parsed_message_list = []
+    failed_message_to_dict = []
+    for i,m in enumerate(message_list):
+        try:
+            parsed_message_list.append(message_to_dict(m))
+        except:
+            failed_message_to_dict.append(log_format_to_json(m))
+    return parsed_message_list, failed_message_to_dict
+
+parsed_message_list, failed_message_to_dict = parse_messages(df.message_content)
+
+def get_method(message):
+    method = ""
+    if 'method' in str(message):
+        if 'aspHttp' in message.keys():
+            method = message['aspHttp'][0]['httpMessage']['method']
+        elif 'request' in message.keys():
+            method = message['request']['method']
+        elif 'aspsSip' in message.keys():
+            if 'aspRequest' in message['aspsSip'][0].keys():
+                method = message['aspsSip'][0]['aspRequest']['request']['requestLine']['method']
+            else:
+                method = ""
+        else:
+            method = ""
+    return method
+
+def message_method_list(parsed_message_list):
+    list = []
+    for message in parsed_message_list:
+        if 'method' in str(message):
+            if get_method(message) not in list:
+                list.append(get_method(message))
+    return list
+
+def message_by_method(parsed_message_list, method):
+    list = []
+    for message in parsed_message_list:
+        if get_method(message) == method:
+            list.append(message)
+    return list
+
+def get_description(message):
+    description = ""
+    if 'description' in str(message):
+        if 'internalMessage' in message.keys():
+            description = message['internalMessage']['description']
+        else:
+            description = ""
+    return description
+
+list_of_method = ['POST', '', 'REGISTER_E(11)', 'INVITE_E(4)', 'GET', 'MESSAGE_E(6)', 'ACK_E(0)', 'DELETE', 'BYE_E(1)']
+dico = {'method' : [], 'description': [],'message': []}
+for i in parsed_message_list:
+    dico['method'].append(get_method(i))
+    dico['description'].append(get_description(i))
+    dico['message'].append(i)
+
+df = pd.DataFrame(dico)
