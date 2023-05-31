@@ -240,3 +240,4 @@ for i in parsed_message_list:
     dico['message'].append(i)
 
 df = pd.DataFrame(dico)
+print(df)
